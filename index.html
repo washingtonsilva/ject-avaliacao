@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Avaliação – XV JECT | Washington</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --azul:    #1a3a5c;
+      --azul2:   #2563a8;
+      --cinza1:  #f0f4f8;
+      --cinza2:  #dce3ec;
+      --cinza3:  #b0bec5;
+      --verde:   #2e7d32;
+      --amarelo: #f9a825;
+      --vermelho:#c62828;
+      --branco:  #ffffff;
+      --texto:   #1a1a2e;
+      --radius:  10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--cinza1);
+      color: var(--texto);
+      padding: 12px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    /* ── Cabeçalho ── */
+    header {
+      background: var(--azul);
+      color: var(--branco);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 14px 16px 10px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: .3px; }
+    header p  { font-size: .78rem; opacity: .85; margin-top: 4px; }
+
+    /* ── Card por trabalho ── */
+    .trabalho {
+      background: var(--branco);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
+      margin: 14px 0;
+      overflow: hidden;
+    }
+
+    .trabalho-header {
+      background: var(--azul2);
+      color: var(--branco);
+      padding: 10px 14px;
+    }
+    .trabalho-header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 1px 10px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      margin-bottom: 5px;
+    }
+    .trabalho-header .area {
+      font-size: .78rem;
+      opacity: .90;
+      margin-bottom: 3px;
+    }
+    .trabalho-header .titulo {
+      font-size: .93rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    /* ── Critérios ── */
+    .criterios { padding: 0 0 6px; }
+
+    .criterio {
+      border-bottom: 1px solid var(--cinza2);
+      padding: 10px 14px;
+    }
+    .criterio:last-child { border-bottom: none; }
+    .criterio:nth-child(even) { background: var(--cinza1); }
+
+    .criterio-nome {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--azul);
+      margin-bottom: 9px;
+    }
+
+    /* Radio buttons com visual de chips */
+    .conceitos {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .conceitos input[type="radio"] { display: none; }
+
+    .conceitos label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      border: 1.8px solid var(--cinza3);
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: .80rem;
+      font-weight: 500;
+      color: #555;
+      transition: all .15s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .conceitos label::before {
+      content: "";
+      display: inline-block;
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      border: 2px solid var(--cinza3);
+      flex-shrink: 0;
+      transition: all .15s ease;
+    }
+
+    /* Satisfatório → verde */
+    .conceitos input[value="Satisfatório"]:checked + label {
+      border-color: var(--verde);
+      background: #e8f5e9;
+      color: var(--verde);
+      font-weight: 700;
+    }
+    .conceitos input[value="Satisfatório"]:checked + label::before {
+      background: var(--verde);
+      border-color: var(--verde);
+    }
+
+    /* Regular → amarelo */
+    .conceitos input[value="Regular"]:checked + label {
+      border-color: var(--amarelo);
+      background: #fffde7;
+      color: #795500;
+      font-weight: 700;
+    }
+    .conceitos input[value="Regular"]:checked + label::before {
+      background: var(--amarelo);
+      border-color: var(--amarelo);
+    }
+
+    /* Insatisfatório → vermelho */
+    .conceitos input[value="Insatisfatório"]:checked + label {
+      border-color: var(--vermelho);
+      background: #ffebee;
+      color: var(--vermelho);
+      font-weight: 700;
+    }
+    .conceitos input[value="Insatisfatório"]:checked + label::before {
+      background: var(--vermelho);
+      border-color: var(--vermelho);
+    }
+
+    /* Campo de observação */
+    .obs-field {
+      width: 100%;
+      border: 1.5px solid var(--cinza2);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: .80rem;
+      color: var(--texto);
+      background: #fafafa;
+      resize: vertical;
+      min-height: 34px;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+    .obs-field:focus {
+      outline: none;
+      border-color: var(--azul2);
+      background: var(--branco);
+    }
+    .obs-label {
+      font-size: .72rem;
+      color: var(--cinza3);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    /* ── Rodapé / Botões ── */
+    .acoes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 16px 0 8px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: .90rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.97); opacity: .88; }
+
+    .btn-imprimir {
+      background: var(--azul2);
+      color: var(--branco);
+      flex: 1;
+      min-width: 150px;
+      justify-content: center;
+    }
+    .btn-limpar {
+      background: var(--cinza2);
+      color: #444;
+      justify-content: center;
+    }
+
+    /* Progresso */
+    .progresso-wrap {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin: 14px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .progresso-titulo {
+      font-size: .80rem;
+      font-weight: 600;
+      color: var(--azul);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .barra-bg {
+      background: var(--cinza2);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .barra-fill {
+      height: 8px;
+      background: linear-gradient(90deg, var(--azul2), #42a5f5);
+      border-radius: 10px;
+      width: 0%;
+      transition: width .35s ease;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; padding: 0; font-size: 11px; }
+
+      header { border-radius: 0; }
+
+      .acoes, .progresso-wrap { display: none; }
+
+      .trabalho {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        margin: 8px 0;
+        border-radius: 4px;
+      }
+      .criterio { padding: 6px 10px; }
+      .criterio:nth-child(even) { background: #f5f5f5; }
+
+      .conceitos label {
+        padding: 3px 8px;
+        font-size: .72rem;
+      }
+      .obs-field {
+        border: 1px solid #bbb;
+        min-height: 22px;
+        padding: 3px 6px;
+        font-size: .72rem;
+      }
+    }
+
+    /* ── Responsivo tablet/desktop ── */
+    @media (min-width: 600px) {
+      body { max-width: 680px; margin: 0 auto; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Ficha de Avaliação — XV JECT</h1>
+  <p>Avaliador: <strong>Washington</strong> &nbsp;|&nbsp; BANNER — SemPI e SemEx</p>
+</header>
+
+<!-- Barra de progresso -->
+<div class="progresso-wrap">
+  <div class="progresso-titulo">
+    <span>Progresso de preenchimento</span>
+    <span id="prog-txt">0 / 27 critérios</span>
+  </div>
+  <div class="barra-bg"><div class="barra-fill" id="barra"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TRABALHO 10
+══════════════════════════════════════════════ -->
+<div class="trabalho">
+  <div class="trabalho-header">
+    <div class="badge">Trabalho #10</div>
+    <div class="area">📂 SemPI Jr — Multidisciplinar</div>
+    <div class="titulo">Drenagem urbana sustentável: comparação de soluções permeáveis para reduzir o escoamento superficial em uma área próxima à Av. Tereza Cristina, Belo Horizonte/MG</div>
+  </div>
+  <div class="criterios" id="crit-10"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TRABALHO 14
+══════════════════════════════════════════════ -->
+<div class="trabalho">
+  <div class="trabalho-header">
+    <div class="badge">Trabalho #14</div>
+    <div class="area">📂 SemPI — Administração/Gestão</div>
+    <div class="titulo">Análise comparativa entre apostas online, tesouro renda+ e poupança; evidências sobre o planejamento previdenciário</div>
+  </div>
+  <div class="criterios" id="crit-14"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TRABALHO 18
+══════════════════════════════════════════════ -->
+<div class="trabalho">
+  <div class="trabalho-header">
+    <div class="badge">Trabalho #18</div>
+    <div class="area">📂 SemPI — Ciência da Computação</div>
+    <div class="titulo">Aplicativo RARVI — uma ferramenta de estudo por meio de flashcards</div>
+  </div>
+  <div class="criterios" id="crit-18"></div>
+</div>
+
+<!-- Botões -->
+<div class="acoes">
+  <button class="btn btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+  <button class="btn btn-limpar"   onclick="limpar()">🗑️ Limpar tudo</button>
+</div>
+
+<script>
+const TRABALHOS = [10, 14, 18];
+
+const CRITERIOS = [
+  "Apresentação (qualidade do banner e sequência dos itens)",
+  "Postura",
+  "Clareza e objetividade",
+  "Apresentação de metodologia adequada ao problema e à obtenção dos objetivos com clareza",
+  "Ênfase nos resultados e contribuições obtidas",
+  "Segurança e domínio dos conteúdos apresentados",
+  "Domínio, clareza e segurança nas respostas (arguição)",
+  "Coerência e relevância científica",
+  "Apresentação em um tempo adequado",
+];
+
+const CONCEITOS = ["Satisfatório", "Regular", "Insatisfatório"];
+
+// Gera os critérios para cada trabalho
+TRABALHOS.forEach(num => {
+  const container = document.getElementById(`crit-${num}`);
+  CRITERIOS.forEach((crit, ri) => {
+    const fieldName = `T${num}_C${ri + 1}`;
+    const div = document.createElement("div");
+    div.className = "criterio";
+
+    // Nome do critério
+    const nome = document.createElement("div");
+    nome.className = "criterio-nome";
+    nome.textContent = `${ri + 1}. ${crit}`;
+    div.appendChild(nome);
+
+    // Radio buttons
+    const concDiv = document.createElement("div");
+    concDiv.className = "conceitos";
+    CONCEITOS.forEach(conc => {
+      const id = `${fieldName}_${conc.replace(/\s/g, "_")}`;
+      const inp = document.createElement("input");
+      inp.type = "radio";
+      inp.name = fieldName;
+      inp.value = conc;
+      inp.id = id;
+      inp.addEventListener("change", atualizarProgresso);
+
+      const lbl = document.createElement("label");
+      lbl.htmlFor = id;
+      lbl.textContent = conc;
+
+      concDiv.appendChild(inp);
+      concDiv.appendChild(lbl);
+    });
+    div.appendChild(concDiv);
+
+    // Observação
+    const obsLbl = document.createElement("span");
+    obsLbl.className = "obs-label";
+    obsLbl.textContent = "Observações (opcional)";
+    div.appendChild(obsLbl);
+
+    const obs = document.createElement("textarea");
+    obs.className = "obs-field";
+    obs.placeholder = "Digite aqui suas observações...";
+    obs.rows = 1;
+    obs.name = `${fieldName}_obs`;
+    div.appendChild(obs);
+
+    container.appendChild(div);
+  });
+});
+
+// Progresso
+function atualizarProgresso() {
+  const total = TRABALHOS.length * CRITERIOS.length; // 27
+  let marcados = 0;
+  TRABALHOS.forEach(num => {
+    CRITERIOS.forEach((_, ri) => {
+      const name = `T${num}_C${ri + 1}`;
+      if (document.querySelector(`input[name="${name}"]:checked`)) marcados++;
+    });
+  });
+  const pct = Math.round((marcados / total) * 100);
+  document.getElementById("barra").style.width = pct + "%";
+  document.getElementById("prog-txt").textContent = `${marcados} / ${total} critérios`;
+}
+
+// Limpar
+function limpar() {
+  if (!confirm("Deseja apagar todas as respostas?")) return;
+  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+  document.querySelectorAll("textarea").forEach(t => t.value = "");
+  atualizarProgresso();
+}
+
+atualizarProgresso();
+</script>
+
+</body>
+</html>
